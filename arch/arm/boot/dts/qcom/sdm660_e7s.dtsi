@@ -318,7 +318,7 @@
 					mnt_flags = "ro,barrier=1,discard";
 					fsmgr_flags = "wait";
 					status = "ok";
-				};
+                                };
                                 metadata {
                                         compatible = "android,metadata";
                                         dev = "/dev/block/platform/soc/c0c4000.sdhci/by-name/cache";
