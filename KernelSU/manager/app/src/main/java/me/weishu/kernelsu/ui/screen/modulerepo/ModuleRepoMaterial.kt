@@ -49,7 +49,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularWavyProgressIndicator
 import androidx.compose.material3.DropdownMenuGroup
-import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.SelectableDropdownMenuItem
 import androidx.compose.material3.DropdownMenuPopup
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.HorizontalDivider
@@ -94,6 +94,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import me.weishu.kernelsu.R
 import me.weishu.kernelsu.data.model.RepoModule
+import me.weishu.kernelsu.ui.component.PagerNavigationSpringSpec
 import me.weishu.kernelsu.ui.component.ScrollToTopOnChange
 import me.weishu.kernelsu.ui.component.dialog.ConfirmDialogHandle
 import me.weishu.kernelsu.ui.component.dialog.rememberConfirmDialog
@@ -120,7 +121,7 @@ fun ModuleRepoScreenMaterial(
     val haptic = LocalHapticFeedback.current
     val listState = rememberLazyListState()
     val searchListState = rememberLazyListState()
-    val refreshTick = remember { mutableStateOf(0) }
+    val refreshTick = remember { mutableIntStateOf(0) }
     val pullToRefreshState = rememberPullToRefreshState()
 
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
@@ -160,7 +161,7 @@ fun ModuleRepoScreenMaterial(
                             )
                             DropdownMenuGroup(shapes = MenuDefaults.groupShapes()) {
                                 sortOptions.forEachIndexed { index, (order, resId) ->
-                                    DropdownMenuItem(
+                                    SelectableDropdownMenuItem(
                                         text = { Text(stringResource(resId)) },
                                         selected = state.sortOrder == order,
                                         onClick = {
@@ -218,7 +219,7 @@ fun ModuleRepoScreenMaterial(
             ) {
                 if (state.offline) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Text(text = stringResource(R.string.network_offline), color = MaterialTheme.colorScheme.outline)
+                        Text(text = stringResource(R.string.network_offline), color = MaterialTheme.colorScheme.onSurfaceVariant)
                         Spacer(Modifier.height(12.dp))
                         Button(
                             onClick = actions.onRefresh,
@@ -237,7 +238,7 @@ fun ModuleRepoScreenMaterial(
             ScrollToTopOnChange(
                 listState,
                 state.sortOrder,
-                refreshTick.value,
+                refreshTick.intValue,
                 isBusy = { latestRefreshing.value },
             ) { latestModules.value }
             PullToRefreshBox(
@@ -248,7 +249,7 @@ fun ModuleRepoScreenMaterial(
                 onRefresh = {
                     haptic.performHapticFeedback(HapticFeedbackType.VirtualKey)
                     actions.onRefresh()
-                    refreshTick.value++
+                    refreshTick.intValue++
                 },
                 state = pullToRefreshState,
                 indicator = {
@@ -327,7 +328,7 @@ private fun RepoModuleList(
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
                             text = module.summary,
-                            color = MaterialTheme.colorScheme.outline,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
                             style = MaterialTheme.typography.bodyMedium,
                             overflow = TextOverflow.Ellipsis,
                             maxLines = 4,
@@ -355,13 +356,13 @@ private fun RepoModuleList(
                                 Icon(
                                     imageVector = Icons.Rounded.Star,
                                     contentDescription = "stars",
-                                    tint = MaterialTheme.colorScheme.outline,
+                                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
                                     modifier = Modifier.size(16.dp)
                                 )
                                 Text(
                                     text = module.stargazerCount.toString(),
                                     style = MaterialTheme.typography.bodyMedium,
-                                    color = MaterialTheme.colorScheme.outline,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                                     modifier = Modifier.padding(start = 4.dp)
                                 )
                             }
@@ -371,7 +372,7 @@ private fun RepoModuleList(
                             Text(
                                 text = latestReleaseTime,
                                 style = MaterialTheme.typography.bodyMedium,
-                                color = MaterialTheme.colorScheme.outline,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
                             )
                         }
                     }
@@ -431,6 +432,7 @@ fun ModuleRepoDetailScreenMaterial(
             HorizontalPager(
                 state = pagerState,
                 modifier = Modifier.fillMaxSize(),
+                overscrollEffect = null,
             ) { page ->
                 val paddedInnerPadding = PaddingValues(
                     top = innerPadding.calculateTopPadding() + 56.dp + 8.dp,
@@ -473,7 +475,12 @@ fun ModuleRepoDetailScreenMaterial(
             ExpressiveTabRow(
                 selectedTabIndex = pagerState.currentPage,
                 tabs = tabs,
-                onTabClick = { scope.launch { pagerState.animateScrollToPage(it) } },
+                onTabClick = { scope.launch {
+                    pagerState.animateScrollToPage(
+                        page = it,
+                        animationSpec = PagerNavigationSpringSpec,
+                    )
+                } },
                 modifier = Modifier.padding(top = innerPadding.calculateTopPadding()),
             )
         }
@@ -657,6 +664,7 @@ fun ReleasesPage(
     }
 }
 
+@SuppressLint("DefaultLocale")
 @Composable
 private fun ReleaseAssetSegmentedItem(
     asset: ReleaseAssetArg,

@@ -19,7 +19,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.Checkbox
-import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.SelectableDropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItemColors
 import androidx.compose.material3.ListItemDefaults
@@ -85,7 +85,7 @@ annotation class SegmentedColumnDsl
 private fun defaultSegmentedColors(): ListItemColors = ListItemDefaults.segmentedColors(
     containerColor = colorScheme.surfaceBright,
     disabledContainerColor = colorScheme.surfaceBright,
-    supportingContentColor = colorScheme.outline
+    supportingContentColor = colorScheme.onSurfaceVariant
 )
 
 @Composable
@@ -468,7 +468,7 @@ fun SegmentedDropdownItem(
             anchorOffset = anchorOffset,
         ) {
             items.forEachIndexed { index, text ->
-                DropdownMenuItem(
+                SelectableDropdownMenuItem(
                     text = { Text(text) },
                     selected = index == safeIndex,
                     onClick = {

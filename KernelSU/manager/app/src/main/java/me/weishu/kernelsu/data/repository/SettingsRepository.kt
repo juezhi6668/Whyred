@@ -13,9 +13,19 @@ interface SettingsRepository {
     var enableBlur: Boolean
     var enableFloatingBottomBar: Boolean
     var enableFloatingBottomBarBlur: Boolean
+    var enableNavigationBadge: Boolean
+    var navigationRailExpanded: Boolean
     var pageScale: Float
     var enableWebDebugging: Boolean
+    var moduleSortEnabledFirst: Boolean
+    var moduleSortActionFirst: Boolean
+    var moduleRepoSortOrder: Int
+    var superuserShowSystemApps: Boolean
+    var superuserShowOnlyPrimaryUserApps: Boolean
+    var superuserSortOption: Int
+    var suLogFilters: Set<String>?
     var autoJailbreak: Boolean
+    var useSoftReboot: Boolean
     val intentToken: String
 
     suspend fun getSuCompatStatus(): String
