@@ -18,7 +18,7 @@
 #include "millet.h"
 #include "binder_oem.h"
 #include <trace/hooks/binder.h>
-#include <../../android/binder_internal.h>
+#include <../../android/binder_millet_compat.h>
 
 static struct hlist_head * get_binder_hhead = NULL;
 static struct mutex * get_binder_lock = NULL;

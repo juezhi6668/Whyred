@@ -319,6 +319,14 @@
 					fsmgr_flags = "wait";
 					status = "ok";
                                 };
+                                my_product {
+                                        compatible = "android,my_product";
+                                        dev = "/dev/block/platform/soc/c0c4000.sdhci/by-name/cust";
+                                        type = "erofs";
+                                        mnt_flags = "ro";
+                                        fsmgr_flags = "wait";
+                                        status = "ok";
+                                };
                                 metadata {
                                         compatible = "android,metadata";
                                         dev = "/dev/block/platform/soc/c0c4000.sdhci/by-name/cache";
