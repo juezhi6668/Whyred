@@ -38,6 +38,7 @@
 
 #define CREATE_TRACE_POINTS
 #include <trace/events/signal.h>
+#include <trace/hooks/signal.h>
 
 #include <asm/param.h>
 #include <asm/uaccess.h>
@@ -46,8 +47,6 @@
 #include <asm/cacheflush.h>
 #include "audit.h"	/* audit_signal_info() */
 
-#undef CREATE_TRACE_POINTS
-#include <trace/hooks/signal.h>
 
 /*
  * SLAB caches for signal bits.
